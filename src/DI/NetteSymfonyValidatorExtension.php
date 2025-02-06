@@ -6,6 +6,8 @@ namespace QaData\NetteSymfonyValidator\DI;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Nette;
+use Nette\DI\Definitions\Statement;
+use QaData\NetteSymfonyValidator\ContainerConstraintValidatorFactory;
 use stdClass;
 use Symfony\Component\Validator;
 
@@ -43,7 +45,6 @@ final class NetteSymfonyValidatorExtension extends Nette\DI\CompilerExtension
 			$builder->addDefinition(self::AnnotationReader)
 				->setType(AnnotationReader::class)
 				->setAutowired(false);
-
 		}
 
 		// Register attribute loader
@@ -65,6 +66,7 @@ final class NetteSymfonyValidatorExtension extends Nette\DI\CompilerExtension
 		$builder->addDefinition(self::ValidatorBuilder)
 			->setType(Validator\ValidatorBuilder::class)
 			->setFactory(Validator\ValidatorBuilder::class)
+			->addSetup('setConstraintValidatorFactory', [new Statement(ContainerConstraintValidatorFactory::class)])
 			->addSetup('enableAnnotationMapping', [$attributeLoaderDef])->setAutowired(false);
 
 		// Register validator
